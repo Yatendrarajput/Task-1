@@ -19,6 +19,7 @@ const UserContextProvider = ({ children }) => {
 
     useEffect(() => {
         fetchData();
+
     }, []);
 
 

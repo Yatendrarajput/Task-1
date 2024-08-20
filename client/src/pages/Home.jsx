@@ -2,56 +2,32 @@ import Controls from '../components/Controls';
 import SongList from '../components/SongList';
 
 const HomePage = () => {
-
     return (
-        <div style={{
-            position: 'relative',
-            height: '100vh',
-            background: 'linear-gradient(0deg, #000000, #000000), linear-gradient(108.18deg, rgba(51, 66, 94, 0.6) 2.46%, rgba(0, 0, 0, 0.6) 99.84%)',
-            overflow: 'hidden' // Ensure that any overflow content is hidden 
-        }}>
+        <div className="relative h-screen bg-black overflow-hidden">
+            {/* Background Gradient */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-[rgba(51,66,94,0.6)] to-black"></div>
+
             {/* Logo */}
-            <div style={{
-                position: 'absolute',
-                top: '32px',
-                left: '32px',
-                width: '133.41px',
-                height: '40px',
-                padding: '0'
-            }}>
-                <img src="SpotifyLogo.png" alt="Logo" style={{ width: '100%', height: '100%' }} />
+            <div className="absolute top-8 left-8 w-[133.41px] h-[40px] hidden lg:block">
+                <img src="SpotifyLogo.png" alt="Logo" className="w-full h-full" />
             </div>
+
             {/* Login Image */}
-            <div style={{
-                position: 'absolute',
-                top: '615px',
-                left: '32px',
-                padding: '0'
-            }}>
-                <img src="img.png" alt="Login" style={{ width: '48px', height: '48px', borderRadius: '50%' }} />
+            <div className="absolute bottom-10 left-8 w-12 h-12 hidden lg:block">
+                <img src="img.png" alt="Login" className="rounded-full w-full h-full" />
             </div>
-            {/* SongList */}
-            <div style={{
-                position: 'absolute',
-                width: '432px',
-                height: '856px',
-                top: '40px',
-                left: '350px',
-                opacity: 1 // Make sure the SongList is visible
-            }}>
-                <SongList />
-            </div>
-            {/* Controls */}
-            <div style={{
-                position: 'absolute',
-                width: '480px',
-                height: '692.24px',
-                top: '101px',
-                left: '950px',
-                opacity: '1', // Make sure the Controls are visible
-                gap: '32px'
-            }}>
-                <Controls />
+
+            {/* Main Content */}
+            <div className="absolute inset-0 flex justify-center items-start mt-10 lg:mt-0 lg:flex-row lg:items-start">
+                {/* SongList */}
+                <div className="w-full max-w-lg p-4 lg:w-1/3">
+                    <SongList />
+                </div>
+
+                {/* Controls */}
+                <div className="w-full max-w-lg p-4 lg:w-1/3 lg:ml-8 mt-8 lg:mt-0">
+                    <Controls />
+                </div>
             </div>
         </div>
     );

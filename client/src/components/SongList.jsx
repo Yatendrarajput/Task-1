@@ -1,7 +1,5 @@
-///songlist correct
-
 import { useContext, useEffect, useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
+import { FaSearch, FaChevronDown } from 'react-icons/fa';
 import UserContext from '../context/UserContext';
 
 const SongList = () => {
@@ -17,30 +15,26 @@ const SongList = () => {
     const [view, setView] = useState('forYou'); // State to manage the current view
     const [search, setSearch] = useState("");
     const [filteredSongs, setFilteredSongs] = useState(songsArray);
+    const [showDropdown, setShowDropdown] = useState(false); // State to toggle dropdown on mobile screens
+
     const handleSongClick = (song, index) => {
         if (audio) {
-            console.log(audio);
             audio.pause(); // Pause the current audio
         }
         const newAudio = new Audio(song.url);
-        // newAudio.play(); // Play the new audio
         setAudio(newAudio); // Set the new audio in the context
         setCurrentSongIndex(index); // Set the current song index in the context
         setCurrentSong(song);
-
-        console.log(index);
-
     };
 
     useEffect(() => {
-        if (search == "") {
-            if (view != "forYou") {
+        if (search === "") {
+            if (view !== "forYou") {
                 const filtered = songsArray.filter(song => song.top_track);
                 setFilteredSongs(filtered);
             } else {
-                setFilteredSongs(songsArray)
+                setFilteredSongs(songsArray);
             }
-
         } else {
             const searchSongsList = songsArray.filter(song =>
                 song.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -50,139 +44,91 @@ const SongList = () => {
         }
     }, [view, search, songsArray]);
 
-
-    // Filter songs based on the current view
-    // const filteredSongs = view === 'forYou'
-    //     ? songsArray
-    //     : songsArray.filter(song => song.top_track);
-
     return (
-        <div style={{
-            width: '432px',
-            height: '700px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-start',
-            color: '#FFFFFF'
-        }}>
-            {/* Top Texts */}
-            <div style={{
-                display: 'flex',
-                gap: '40px',
-                marginBottom: '16px',
-            }}>
+        <div className="w-full max-w-lg h-full max-h-[700px] flex flex-col justify-start text-white p-4 box-border mt-[-15px]">
+            {/* Top Buttons - Hidden on Mobile */}
+            <div className={`hidden md:flex gap-5 mb-4 flex-wrap ${showDropdown ? 'mt-0' : 'mt-4'}`}>
                 <button
                     onClick={() => setView('forYou')}
-                    style={{
-                        fontFamily: 'Inter, sans-serif',
-                        fontSize: '24px',
-                        fontWeight: '700',
-                        lineHeight: '32px',
-                        color: '#FFFFFF',
-                        opacity: view === 'forYou' ? '100%' : '50%', // Opacity based on view
-                        background: 'transparent',
-                        border: 'none',
-                        cursor: 'pointer',
-                    }}
+                    className={`font-inter transition-opacity text-lg md:text-xl font-bold ${view === 'forYou' ? 'opacity-100' : 'opacity-50'
+                        } bg-transparent border-none cursor-pointer`}
                 >
-                    For You
+                    <span className='text-3xl'>  For You</span>
                 </button>
                 <button
                     onClick={() => setView('topTracks')}
-                    style={{
-                        fontFamily: 'Inter, sans-serif',
-                        fontSize: '24px',
-                        fontWeight: '700',
-                        lineHeight: '32px',
-                        color: '#FFFFFF',
-                        opacity: view === 'topTracks' ? '100%' : '50%', // Opacity based on view
-                        background: 'transparent',
-                        border: 'none',
-                        cursor: 'pointer',
-                    }}
+                    className={`font-inter transition-opacity text-lg md:text-xl font-bold ${view === 'topTracks' ? 'opacity-100' : 'opacity-50'
+                        } bg-transparent border-none cursor-pointer`}
                 >
-                    Top Tracks
+                    <span className='text-3xl'>  Top Tracks</span>
                 </button>
             </div>
 
+            {/* Dropdown Button for Mobile */}
+            <div className="flex md:hidden justify-between items-center mb-4 mt-[-40px]">
+                <span className="text-2xl font-bold">Music</span>
+                <button
+                    onClick={() => setShowDropdown(!showDropdown)}
+                    className="text-white focus:outline-none"
+                >
+                    <FaChevronDown />
+                </button>
+            </div>
+
+            {/* Dropdown Menu for Mobile */}
+            {showDropdown && (
+                <div className="flex md:hidden flex-col gap-3 mb-4 ">
+                    <button
+                        onClick={() => { setView('forYou'); setShowDropdown(false); }}
+                        className={`font-inter text-lg font-bold ${view === 'forYou' ? 'opacity-100' : 'opacity-50'
+                            } bg-transparent border-none cursor-pointer`}
+                    >
+                        For You
+
+                    </button>
+                    <button
+                        onClick={() => { setView('topTracks'); setShowDropdown(false); }}
+                        className={`font-inter text-lg font-bold ${view === 'topTracks' ? 'opacity-100' : 'opacity-50'
+                            } bg-transparent border-none cursor-pointer`}
+                    >
+                        Top Tracks
+                    </button>
+                </div>
+            )}
+
             {/* Search Bar */}
-            <div style={{
-                width: '400px',
-                height: '42px',
-                display: 'flex',
-                borderRadius: '8px',
-                backgroundColor: '#282828',
-                padding: '8px 16px',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-            }}>
+            <div className="w-full max-w-xs h-10 flex rounded-lg bg-gray-800 p-2 mb-4 shadow-md ">
                 <input
                     type="text"
                     placeholder="Search Song, Artist"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    style={{
-                        flex: 1,
-                        border: 'none',
-                        outline: 'none',
-                        fontSize: '16px',
-                        color: 'white',
-                        backgroundColor: 'transparent'
-                    }}
+                    className="flex-1 bg-transparent border-none outline-none text-sm text-white placeholder-gray-400"
                 />
-                <button style={{
-                    border: 'none',
-                    backgroundColor: 'transparent',
-                    cursor: 'pointer'
-                }}>
-                    <FaSearch style={{ color: '#FFFFFF', width: '19.3px', height: '19.33px' }} />
+                <button className="bg-transparent border-none cursor-pointer">
+                    <FaSearch className="text-white w-5 h-5" />
                 </button>
             </div>
 
             {/* Song List */}
-            <div style={{
-                marginTop: '8px',
-                height: '70px',
-                width: '400px',
-            }}>
+            <div className="flex flex-col gap-2 flex-1 ">
                 {filteredSongs.map((song, index) => (
                     <div
                         key={index}
-                        onClick={() => { handleSongClick(song, index) }}
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            height: currentSongIndex === index ? '60px' : '70px',
-                            width: '400px',
-                            padding: currentSongIndex === index ? '12px' : '16px',
-                            borderRadius: '8px',
-                            backgroundColor: currentSongIndex === index ? '#282828' : 'transparent',
-                            cursor: 'pointer',
-                        }}
+                        onClick={() => handleSongClick(song, index)}
+                        className={`flex items-center gap-4 p-3 rounded-lg cursor-pointer transition-all ${currentSongIndex === index
+                            ? 'bg-gray-800 h-14 max-w-xs'
+                            : 'bg-transparent h-16'
+                            }`}
                     >
                         <img
                             src={`https://cms.samespace.com/assets/${song.cover}`}
                             alt={song.name}
-                            style={{
-                                width: '38px',
-                                height: '38px',
-                                borderRadius: '56px',
-                                marginLeft: '0px',
-                                marginRight: '16px',
-                            }}
+                            className="w-12 h-12 rounded-full object-cover"
                         />
-                        <div style={{ flex: 1 }}>
-                            <p style={{
-                                margin: 0,
-                                fontSize: '18px',
-                                fontFamily: 'Inter, sans-serif',
-                                color: '#FFFFFF',
-                            }}>{song.name}</p>
-                            <p style={{
-                                margin: 0,
-                                fontSize: '12px',
-                                fontFamily: 'Inter, sans-serif',
-                                color: '#CCCCCC',
-                            }}>{song.artist}</p>
+                        <div className="flex-1">
+                            <p className="text-base font-inter text-white m-0">{song.name}</p>
+                            <p className="text-sm font-inter text-gray-400 m-0">{song.artist}</p>
                         </div>
                     </div>
                 ))}
